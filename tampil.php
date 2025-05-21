@@ -1,7 +1,24 @@
 <?php
 include 'db.php';
 
-$sql = "SELECT * FROM produk";
+// Ambil parameter pencarian dan filter
+$search = $_GET['search'] ?? '';
+$kategori = $_GET['kategori'] ?? '';
+
+// Query dasar
+$sql = "SELECT * FROM produk WHERE 1";
+
+// Filter kategori jika ada
+if (!empty($kategori)) {
+    $sql .= " AND kategori = '" . $conn->real_escape_string($kategori) . "'";
+}
+
+// Pencarian nama/deskripsi
+if (!empty($search)) {
+    $search = $conn->real_escape_string($search);
+    $sql .= " AND (nama LIKE '%$search%')";
+}
+
 $result = $conn->query($sql);
 
 if (!$result) {
@@ -22,26 +39,22 @@ if (!$result) {
       <a href="kelola.php" class="btn btn-secondary">Kelola Produk</a>
     </p>
 
-    <form method="GET" class="mb-4">
-      <div class="row">
-        <div class="col-md-4">
-          <select name="kategori" class="form-select">
-            <option value="">Semua Kategori</option>
-            <?php
-            $kategori_query = "SELECT DISTINCT kategori FROM produk";
-            $kategori_result = $conn->query($kategori_query);
-            while ($kat = $kategori_result->fetch_assoc()) {
-              $selected = isset($_GET['kategori']) && $_GET['kategori'] == $kat['kategori'] ? 'selected' : '';
-              echo "<option value='" . $kat['kategori'] . "' $selected>" . $kat['kategori'] . "</option>";
-            }
-            ?>
-          </select>
-        </div>
-        <div class="col-md-2">
-          <button type="submit" class="btn btn-primary">Filter</button>
-        </div>
-      </div>
-    </form>
+    <form method="GET" class="row g-2 mb-4">
+  <div class="col-md-4">
+    <input type="text" name="search" class="form-control" placeholder="Cari produk..." value="<?= htmlspecialchars($search) ?>">
+  </div>
+  <div class="col-md-4">
+    <select name="kategori" class="form-select" onchange="this.form.submit()">
+      <option value="">Semua Kategori</option>
+      <option value="Komputer & Aksesoris" <?= $kategori == 'Komputer & Aksesoris' ? 'selected' : '' ?>>Komputer & Aksesoris</option>
+      <option value="Fashion" <?= $kategori == 'Fashion' ? 'selected' : '' ?>>Fashion</option>
+      <option value="Elektronik" <?= $kategori == 'Elektronik' ? 'selected' : '' ?>>Elektronik</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary w-100">Cari</button>
+  </div>
+</form>
 
     <h2 class="mb-4">Daftar Produk</h2>
     <div class="row">
