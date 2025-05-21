@@ -8,6 +8,11 @@ $result = $conn->query("SELECT * FROM produk");
 <head>
   <title>Kelola Produk</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script>
+    function konfirmasiHapus(namaProduk) {
+      return confirm('Yakin ingin menghapus produk: "' + namaProduk + '"?');
+    }
+  </script>
 </head>
 <body class="p-4">
   <div class="container">
@@ -32,7 +37,11 @@ $result = $conn->query("SELECT * FROM produk");
             <td><?= $row['kategori']; ?></td>
             <td>
               <a href="edit.php?id=<?= $row['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-              <a href="hapus.php?id=<?= $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus produk ini?')">Hapus</a>
+              <a href="hapus.php?id=<?= $row['id']; ?>"
+                 class="btn btn-danger btn-sm"
+                 onclick="return konfirmasiHapus('<?= htmlspecialchars($row['nama']); ?>')">
+                 Hapus
+              </a>
             </td>
           </tr>
         <?php endwhile; ?>
