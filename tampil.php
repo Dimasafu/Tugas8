@@ -1,5 +1,12 @@
 <?php
 include 'db.php';
+
+$sql = "SELECT * FROM produk";
+$result = $conn->query($sql);
+
+if (!$result) {
+    die("Query error: " . $conn->error);
+}
 ?>
 
 <!DOCTYPE html>
@@ -10,6 +17,9 @@ include 'db.php';
 </head>
 <body class="p-4 bg-light">
   <div class="container">
+    <p class="text-center mb-4">
+      <a href="form.php" class="btn btn-primary">Tambah Produk Baru</a>
+      <a href="kelola.php" class="btn btn-secondary">Kelola Produk</a>
     <h2 class="mb-4">Daftar Produk</h2>
     <div class="row">
       <?php while ($row = $result->fetch_assoc()): ?>
